@@ -1,0 +1,22 @@
+{
+    "name": "m2express/module-base",
+    "description": "1 Page theme base module",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "email": "info@magento2express.com",
+            "name": "Magento2Express"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "M2express\\Base\\": ""
+        }
+    }
+}

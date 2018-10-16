@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="m2express_base" translate="label" sortOrder="1000">
+            <label><![CDATA[<img src="https://magento2express.com/wp-content/uploads/sites/3/2018/06/magento2express-logo-small-colorful.png" width="100px"/>]]></label>
+        </tab>
+        <section id="m2express_base" translate="label" showInDefault="1" showInStore="1" showInWebsite="1">
+            <label>General</label>
+            <tab>m2express_base</tab>
+            <resource>M2express_Home2Steps::config_m2express_base</resource>
+            <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General Configuration</label>
+                <comment>This will effect to home page layout</comment>
+                <field id="home_category" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Home Category</label>
+                    <comment/>
+                    <source_model>M2express\Home2Steps\Model\Config\Source\CategoryList</source_model>
+                </field>
+                <field id="color_of_theme" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Theme color</label>
+                    <comment/>
+                    <source_model>M2express\Home2Steps\Model\Config\Source\ColorOfTheme</source_model>
+                </field>
+                <field id="style_of_theme" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Theme style</label>
+                    <comment/>
+                    <source_model>M2express\Home2Steps\Model\Config\Source\StyleOfTheme</source_model>
+                </field>
+                <field id="effect_of_style" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Style effect</label>
+                    <comment/>
+                    <source_model>M2express\Home2Steps\Model\Config\Source\EffectOfStyle</source_model>
+                </field>
+                <field id="info_position" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Product info position</label>
+                    <comment/>
+                    <source_model>M2express\Home2Steps\Model\Config\Source\InfoPosition</source_model>
+                </field>
+                <field id="cart_position" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Cart position</label>
+                    <comment/>
+                    <source_model>M2express\Home2Steps\Model\Config\Source\CartPosition</source_model>
+                </field>
+                <field id="filter_attributes" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="multiselect">
+                    <label>Filter attributes</label>
+                    <comment/>
+                    <source_model>M2express\Home2Steps\Model\Config\Source\FilterAttributes</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

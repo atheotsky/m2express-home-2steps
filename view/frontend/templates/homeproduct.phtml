@@ -1,0 +1,138 @@
+<?php
+/**
+ * @var $block \M2express\Home2Steps\Block\HomeProduct
+ */
+?>
+<?php
+/**
+ * Copyright © Magento2Express. All rights reserved.
+ * @author: <mailto:contact@magento2express.com>.
+ */
+use Magento\Framework\App\Action\Action;
+// @codingStandardsIgnoreFile
+
+?>
+<?php
+$configHelper = $block->getModuleConfig();
+$cartPosition = $configHelper->getCartPosition();
+$infoPosition = $configHelper->getConfigByScope('m2express_base/general/info_position');
+$filterAttributes = $configHelper->getConfigByScope('m2express_base/general/filter_attributes');
+$filterAttributesArr = explode(',', $filterAttributes);
+//print_r($filterAttributesArr);
+$themeStyle = $configHelper->getThemeStyle();
+
+$showWishlist = false;
+$showCompare = true;
+$showCart = true;
+
+?>
+<?= /* @escapeNotVerified */ ($themeStyle=='horizontal') ? '<div id="custom-main-container">' : '<div id="custom-main-container-reverse">' ?>
+<div id="test-grid">
+<?php if (($_products = $block->getProductCollection()) && $_products->getSize()): ?>
+    <?php $suffix = $block->getNameInLayout(); ?>
+    <?php $iterator = 0; ?>
+    <?php foreach ($_products->getItems() as $_product): ?>
+        <?php $iterator++; ?>
+        <?php
+            //$productInfo = $block->getProductById($_product->getEntityId());
+            $attributes = $_product->getCustomAttributes();
+            //$filterGroupVariable = '';
+            $filterDataVariable = '';
+
+            foreach ($attributes as $attribute) {
+                //echo $attribute->getAttributeCode();
+                if (in_array($attribute->getAttributeCode(),$filterAttributesArr)) {
+                    //$filterGroupVariable .= '["'.$attribute->getAttributeCode().'"],';
+                    $filterDataVariable .= " data-".$attribute->getAttributeCode()."='".$attribute->getValue()."'";
+                }
+            }
+
+            //$filterGroupVariable = " data-groups='".$filterGroupVariable."'";
+        ?>
+        <div class="grid__brick" <?= $filterDataVariable; ?>>
+        <?= /* @escapeNotVerified */ ($themeStyle=='horizontal') ? '<div class="custom-product-container '."custom-info-pos-".$infoPosition.'">' : '<div class="grid__brick custom-product-container-reverse">' ?>
+            <div style="position: relative; background: url('<?= $block->getImage($_product, 'product_page_image_large')->getImageUrl() ?>');">
+                <?= /* @escapeNotVerified */ ($themeStyle=='horizontal' && $iterator%2==0) ? '<div class="right-column">' : '<div class="right-column-reverse">' ?>
+                    <!-- Product Description -->
+                    <div class="custom-product-description">
+                        <h1><?= /* @escapeNotVerified */ $this->helper('Magento\Catalog\Helper\Output')->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+                        <p><?= /* @escapeNotVerified */ $this->helper('Magento\Catalog\Helper\Output')->productAttribute($_product, $_product->getDescription(), 'description') ?></p>
+                    </div>
+                    <!-- Product Pricing -->
+                    <div class="custom-product-price">
+                        <div class="product-item">
+                            <span><?= /* @escapeNotVerified */ $this->helper('Magento\Catalog\Helper\Output')->productAttribute($_product, $_product->getPrice(), 'price') ?></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="home-product-button-list">
+                    <?php if ($_product->isSaleable()): ?>
+                        <?php if ($_product->getTypeInstance()->hasRequiredOptions($_product)): ?>
+                            <a href="javascript:void(0);" class="action tocart"
+                               data-mage-init='{"redirectUrl":{"url":"<?= /* @escapeNotVerified */ $block->getAddToCartUrl($_product) ?>"}}'
+                               title="<?= /* @escapeNotVerified */ __('Add to Cart') ?>">
+                                <?= /* @escapeNotVerified */ __('Add to Cart') ?>
+                            </a>
+                        <?php else: ?>
+                            <?php
+                            $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
+                            $postData = $postDataHelper->getPostData($block->getAddToCartUrl($_product), ['product' => $_product->getEntityId()])
+                            ?>
+                            <a href="javascript:void(0);" class="action tocart cart-btn"
+                               data-post='<?= /* @escapeNotVerified */ $postData ?>'
+                               type="button" title="<?= /* @escapeNotVerified */ __('Add to Cart') ?>">
+                                <?= /* @escapeNotVerified */ __('Add to Cart') ?>
+                            </a>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <?php if ($_product->getIsSalable()): ?>
+                            <div class="stock available"><span><?= /* @escapeNotVerified */ __('In stock') ?></span></div>
+                        <?php else: ?>
+                            <div class="stock unavailable"><span><?= /* @escapeNotVerified */ __('Out of stock') ?></span></div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+
+                    <?php if ($addToBlock = $block->getChildBlock('addto')): ?>
+                        <?= $addToBlock->setProduct($_product)->getChildHtml() ?>
+                    <?php endif; ?>
+
+                </div>
+            </div>
+        </div>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+    <div class="my-sizer-element"></div>
+</div>
+</div>
+<script>
+    requirejs([
+            'jquery',
+            'Magento_Ui/js/modal/modal',
+            'onepage_scroll'
+        ],
+        function($, modal) {
+
+            $(document).ready(function() {
+                if($("#custom-main-container").length) {
+                    $("#custom-main-container").onepage_scroll({
+                        sectionContainer: ".custom-product-container",
+                        responsiveFallback: 600,
+                        loop: true,
+                        direction: "horizontal"
+                    });
+                }
+
+                if($("#custom-main-container-reverse").length) {
+                    $("#custom-main-container-reverse").onepage_scroll({
+                        sectionContainer: ".custom-product-container-reverse",
+                        responsiveFallback: 600,
+                        loop: true,
+                        direction: "vertical"
+                    });
+                }
+            });
+        }
+    );
+</script>
