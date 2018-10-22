@@ -28,7 +28,7 @@ class Data extends AbstractHelper
     public function getHomeCategory($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
     {
         return $this->scopeConfig->getValue(
-            'm2express_base/general/home_category',
+            'm2express_home2steps/general/home_category',
             $scope
         );
     }
@@ -36,7 +36,7 @@ class Data extends AbstractHelper
     public function getThemeColor($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
     {
         return $this->scopeConfig->getValue(
-            'm2express_base/general/color_of_theme',
+            'm2express_home2steps/general/color_of_theme',
             $scope
         );
     }
@@ -44,18 +44,18 @@ class Data extends AbstractHelper
     public function getThemeStyle($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
     {
         return $this->scopeConfig->getValue(
-            'm2express_base/general/style_of_theme',
+            'm2express_home2steps/general/style_of_theme',
             $scope
         );
     }
 
     public function getEffectTheme($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
     {
-        return $this->scopeConfig->getValue('m2express_base/general/effect_of_style', $scope);
+        return $this->scopeConfig->getValue('m2express_home2steps/general/effect_of_style', $scope);
     }
 
     public function getCartPosition($scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT)
     {
-        return $this->scopeConfig->getValue('m2express_base/general/cart_position', $scope);
+        return $this->scopeConfig->getValue('m2express_home2steps/general/cart_position', $scope);
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
-        <m2express_base>
+        <m2express_home2steps>
             <general>
                 <home_category>1</home_category>
                 <color_of_theme>blue</color_of_theme>
@@ -11,6 +11,6 @@
                 <cart_position>right</cart_position>
                 <filter_attributes>type</filter_attributes>
             </general>
-        </m2express_base>
+        </m2express_home2steps>
     </default>
 </config>

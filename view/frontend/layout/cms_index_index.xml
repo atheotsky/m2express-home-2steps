@@ -2,6 +2,9 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<head>
 		<css src="M2express_Home2Steps::css/custom.css"/>
-		<css src="M2express_Home2Steps::css/onepage-scroll.css"/>
+		<css src="M2express_Home2Steps::assets/owl.carousel.css"/>
+		<css src="M2express_Home2Steps::assets/owl.theme.default.css"/>
+		<css src="M2express_Home2Steps::css/animate.css"/>
+		<!--<css src="M2express_Home2Steps::css/onepage-scroll.css"/>-->
 	</head>
 </page>

@@ -7,14 +7,14 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Catalog\Model\ProductRepository;
-use M2express\Base\Helper\Data;
+use M2express\Home2Steps\Helper\Data;
 use Magento\Checkout\Helper\Cart;
 use Magento\Catalog\Helper\Product\Compare;
 use Magento\Catalog\Block\Product\ImageBuilder;
 
 /**
  * Class HomeProduct
- * @package M2express\Base\Block
+ * @package M2express\Home2Steps\Block
  */
 class HomeProduct extends Template
 {
@@ -65,8 +65,8 @@ class HomeProduct extends Template
         $categoryId = $this->helper->getHomeCategory();
         $collection = $this->productCollectionFactory->create();
         $collection->addCategoriesFilter(['eq' => $categoryId]);
-        $collection->addAttributeToSelect('*')->setPageSize(3);
-        $collection->addAttributeToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH);
+        $collection->addAttributeToSelect('*');
+        //$collection->addAttributeToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH);
         $collection->getSelect()->orderRand();
 
         return $collection;
