@@ -4,6 +4,7 @@
  * @author: <mailto:contact@magento2express.com>.
  */
 
+use Magento\Framework\App\Action\Action;
 ?>
 <?php
 $configHelper = $block->getModuleConfig();
@@ -55,23 +56,17 @@ $showCart = true;
                             </div>
                             <div class="home-product-button-list">
                                 <?php if ($_product->isSaleable()): ?>
-                                    <?php if ($_product->getTypeInstance()->hasRequiredOptions($_product)): ?>
-                                        <a href="javascript:void(0);" class="action tocart"
-                                           data-mage-init='{"redirectUrl":{"url":"<?= /* @escapeNotVerified */ $block->getAddToCartUrl($_product) ?>"}}'
-                                           title="<?= /* @escapeNotVerified */ __('Add to Cart') ?>">
-                                            <?= /* @escapeNotVerified */ __('Add to Cart') ?>
-                                        </a>
-                                    <?php else: ?>
-                                        <?php
-                                        $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
-                                        $postData = $postDataHelper->getPostData($block->getAddToCartUrl($_product), ['product' => $_product->getEntityId()])
-                                        ?>
-                                        <a href="javascript:void(0);" class="action tocart cart-btn"
-                                           data-post='<?= /* @escapeNotVerified */ $postData ?>'
-                                           type="button" title="<?= /* @escapeNotVerified */ __('Add to Cart') ?>">
-                                            <?= /* @escapeNotVerified */ __('Add to Cart') ?>
-                                        </a>
-                                    <?php endif; ?>
+                                    <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                                    <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtml($_product->getSku()) ?>" action="<?= /* @NoEscape */ $postParams['action'] ?>" method="post">
+                                        <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $postParams['data']['product'] ?>">
+                                        <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                        <?= $block->getBlockHtml('formkey') ?>
+                                        <button type="submit"
+                                                title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
+                                                class="action tocart primary">
+                                            <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                        </button>
+                                    </form>
                                 <?php else: ?>
                                     <?php if ($_product->getIsSalable()): ?>
                                         <div class="stock available"><span><?= /* @escapeNotVerified */ __('In stock') ?></span></div>
@@ -104,6 +99,14 @@ if($themeStyle=='horizontal') {
     <?php
 }
 ?>
+
+<script type="text/x-magento-init">
+{
+    "[data-role=tocart-form], .form.map.checkout": {
+        "catalogAddToCart": { }
+    }
+}
+</script>
 <script>
     requirejs([
             'jquery',

@@ -11,6 +11,7 @@ use M2express\Home2Steps\Helper\Data;
 use Magento\Checkout\Helper\Cart;
 use Magento\Catalog\Helper\Product\Compare;
 use Magento\Catalog\Block\Product\ImageBuilder;
+use Magento\Framework\App\ActionInterface;
 
 /**
  * Class HomeProduct
@@ -25,6 +26,7 @@ class HomeProduct extends Template
     protected $imageBuilder;
     protected $cartHelper;
     protected $compareHelper;
+    protected $urlHelper;
 
     /**
      * Constructor
@@ -36,6 +38,7 @@ class HomeProduct extends Template
      * @param Cart $cartHelper
      * @param Compare $compareHelper
      * @param ImageBuilder $imageBuilder
+     * @param \Magento\Framework\Url\Helper\Data $urlHelper
      * @param array $data
      */
     public function __construct(
@@ -46,6 +49,7 @@ class HomeProduct extends Template
         Cart $cartHelper,
         Compare $compareHelper,
         ImageBuilder $imageBuilder,
+        \Magento\Framework\Url\Helper\Data $urlHelper,
         array $data = []
     ) {
         $this->productCollectionFactory = $productFactory;
@@ -54,6 +58,7 @@ class HomeProduct extends Template
         $this->cartHelper = $cartHelper;
         $this->compareHelper = $compareHelper;
         $this->imageBuilder = $imageBuilder;
+        $this->urlHelper = $urlHelper;
         parent::__construct($context, $data);
     }
 
@@ -121,6 +126,18 @@ class HomeProduct extends Template
     public function getAddToCartUrl($product)
     {
         return $this->cartHelper->getAddUrl($product);
+    }
+
+    public function getAddToCartPostParams($product)
+    {
+        $url = $this->getAddToCartUrl($product);
+        return [
+            'action' => $url,
+            'data' => [
+                'product' => $product->getEntityId(),
+                ActionInterface::PARAM_NAME_URL_ENCODED => $this->urlHelper->getEncodedUrl($url),
+            ]
+        ];
     }
 
     /**
