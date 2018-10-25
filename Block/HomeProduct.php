@@ -6,7 +6,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
-use Magento\Catalog\Model\ProductRepository;
+use Magento\Catalog\Model\CategoryRepository;
+use Magento\Catalog\Model\CategoryFactory;
 use M2express\Home2Steps\Helper\Data;
 use Magento\Checkout\Helper\Cart;
 use Magento\Catalog\Helper\Product\Compare;
@@ -21,19 +22,21 @@ class HomeProduct extends Template
 {
 
     protected $productCollectionFactory;
-    protected $productRepository;
+    protected $categoryFactory;
+    protected $categoryRepository;
     protected $helper;
     protected $imageBuilder;
     protected $cartHelper;
     protected $compareHelper;
     protected $urlHelper;
 
+    protected $_category;
+
     /**
      * Constructor
      *
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param CollectionFactory $productFactory
-     * @param ProductRepository $productRepository
      * @param Data $helper
      * @param Cart $cartHelper
      * @param Compare $compareHelper
@@ -44,7 +47,8 @@ class HomeProduct extends Template
     public function __construct(
         Context $context,
         CollectionFactory $productFactory,
-        ProductRepository $productRepository,
+        CategoryRepository $categoryRepository,
+        CategoryFactory $categoryFactory,
         Data $helper,
         Cart $cartHelper,
         Compare $compareHelper,
@@ -53,7 +57,8 @@ class HomeProduct extends Template
         array $data = []
     ) {
         $this->productCollectionFactory = $productFactory;
-        $this->productRepository = $productRepository;
+        $this->categoryFactory = $categoryFactory;
+        $this->categoryRepository = $categoryRepository;
         $this->helper = $helper;
         $this->cartHelper = $cartHelper;
         $this->compareHelper = $compareHelper;
@@ -68,33 +73,43 @@ class HomeProduct extends Template
     public function getProductCollection()
     {
         $categoryId = $this->helper->getHomeCategory();
+        $currentCategory = $this->getCategory($categoryId);
+        $category_id_array = $this->getAllChildren();
+
         $collection = $this->productCollectionFactory->create();
-        $collection->addCategoriesFilter(['eq' => $categoryId]);
         $collection->addAttributeToSelect('*');
+        $collection->addCategoriesFilter(['in' => $category_id_array]);
         //$collection->addAttributeToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH);
+        $collection->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
         $collection->getSelect()->orderRand();
 
         return $collection;
+
     }
 
     /**
-     * @param $productId
-     * @return \Magento\Catalog\Api\Data\ProductInterface|mixed
-     * @throws NoSuchEntityException
+     * @param $categoryId
+     * @return \Magento\Catalog\Model\Category
      */
-    public function getProductById($productId)
+    public function getCategory($categoryId)
     {
-        return $this->productRepository->getById($productId);
+        $this->_category = $this->categoryFactory->create();
+        $this->_category->load($categoryId);
+        return $this->_category;
     }
 
     /**
-     * @param $sku
-     * @return \Magento\Catalog\Api\Data\ProductInterface|mixed
-     * @throws NoSuchEntityException
+     * @param bool $asArray
+     * @param bool $categoryId
+     * @return array|string
      */
-    public function getProductBySku($sku)
+    public function getAllChildren($asArray = false, $categoryId = false)
     {
-        return $this->productRepository->get($sku);
+        if ($this->_category) {
+            return $this->_category->getAllChildren($asArray);
+        } else {
+            return $this->getCategory($categoryId)->getAllChildren($asArray);
+        }
     }
 
     /**
