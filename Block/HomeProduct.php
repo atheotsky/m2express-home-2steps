@@ -81,6 +81,7 @@ class HomeProduct extends Template
         $collection->addCategoriesFilter(['in' => $category_id_array]);
         //$collection->addAttributeToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH);
         $collection->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
+        $collection->setPageSize(10);
         $collection->getSelect()->orderRand();
 
         return $collection;
