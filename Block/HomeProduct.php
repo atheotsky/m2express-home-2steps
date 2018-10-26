@@ -79,9 +79,9 @@ class HomeProduct extends Template
         $collection = $this->productCollectionFactory->create();
         $collection->addAttributeToSelect('*');
         $collection->addCategoriesFilter(['in' => $category_id_array]);
-        //$collection->addAttributeToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH);
+        $collection->addAttributeToFilter('type_id', 'configurable');
+        $collection->addAttributeToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH);
         $collection->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
-        $collection->setPageSize(10);
         $collection->getSelect()->orderRand();
 
         return $collection;
@@ -154,6 +154,35 @@ class HomeProduct extends Template
                 ActionInterface::PARAM_NAME_URL_ENCODED => $this->urlHelper->getEncodedUrl($url),
             ]
         ];
+    }
+
+    public function getProductDetailsHtml(\Magento\Catalog\Model\Product $product)
+    {
+        $renderer = $this->getDetailsRenderer($product->getTypeId());
+        if ($renderer) {
+            $renderer->setProduct($product);
+            return $renderer->toHtml();
+        }
+        return '';
+    }
+    public function getDetailsRenderer($type = null)
+    {
+        if ($type === null) {
+            $type = 'default';
+        }
+        $rendererList = $this->getDetailsRendererList();
+        if ($rendererList) {
+            return $rendererList->getRenderer($type, 'default');
+        }
+        return null;
+    }
+    protected function getDetailsRendererList()
+    {
+        return $this->getDetailsRendererListName() ? $this->getLayout()->getBlock(
+            $this->getDetailsRendererListName()
+        ) : $this->getChildBlock(
+            'homepage.toprenderers'
+        );
     }
 
     /**

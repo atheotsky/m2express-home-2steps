@@ -18,6 +18,12 @@ $showWishlist = false;
 $showCompare = true;
 $showCart = true;
 
+$type = 'widget-new-grid';
+$viewMode = 'grid';
+$image = 'category_page_grid';
+
+$pos = $block->getPositioned();
+
 ?>
 <div id="custom-main-container">
     <div id="test-grid" class="owl-carousel">
@@ -38,7 +44,7 @@ $showCart = true;
                 }
 
                 ?>
-                <div class="item <?=$filterDataClassVariable; ?>" >
+                <div data-container="product-grid" class="item <?=$filterDataClassVariable; ?>" >
                     <div class="custom-product-container custom-info-pos-<?=$infoPosition;?>">
                         <div style="position: relative; background: url('<?= $block->getImage($_product, 'product_page_image_large')->getImageUrl() ?>');">
                             <div class="right-column">
@@ -47,39 +53,45 @@ $showCart = true;
                                     <h1><?= /* @escapeNotVerified */ $this->helper('Magento\Catalog\Helper\Output')->productAttribute($_product, $_product->getName(), 'name') ?></h1>
                                     <p><?= /* @escapeNotVerified */ $this->helper('Magento\Catalog\Helper\Output')->productAttribute($_product, $_product->getDescription(), 'description') ?></p>
                                 </div>
+                                <div class="custom-product-options">
+                                    <?php echo $block->getProductDetailsHtml($_product); ?>
+                                </div>
                                 <!-- Product Pricing -->
                                 <div class="custom-product-price">
-                                    <div class="product-item">
-                                        <span><?= /* @escapeNotVerified */ $this->helper('Magento\Catalog\Helper\Output')->productAttribute($_product, $_product->getPrice(), 'price') ?></span>
-                                    </div>
+                                    <?php echo $this->getProductPricetoHtml($_product, $type); ?>
                                 </div>
                             </div>
                             <div class="home-product-button-list">
-                                <?php if ($_product->isSaleable()): ?>
-                                    <?php $postParams = $block->getAddToCartPostParams($_product); ?>
-                                    <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtml($_product->getSku()) ?>" action="<?= /* @NoEscape */ $postParams['action'] ?>" method="post">
-                                        <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $postParams['data']['product'] ?>">
-                                        <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
-                                        <?= $block->getBlockHtml('formkey') ?>
-                                        <button type="submit"
-                                                title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
-                                                class="action tocart primary">
-                                            <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
-                                        </button>
-                                    </form>
-                                <?php else: ?>
-                                    <?php if ($_product->getIsSalable()): ?>
-                                        <div class="stock available"><span><?= /* @escapeNotVerified */ __('In stock') ?></span></div>
-                                    <?php else: ?>
-                                        <div class="stock unavailable"><span><?= /* @escapeNotVerified */ __('Out of stock') ?></span></div>
-                                    <?php endif; ?>
-                                <?php endif; ?>
+                                <div class="product-item-inner">
+                                    <div class="product actions product-item-actions">
+                                        <div class="actions-primary"<?php echo strpos($pos, $viewMode . '-primary') ? $position : ''; ?>>
+                                            <?php if ($_product->isSaleable()): ?>
+                                                <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                                                <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtml($_product->getSku()) ?>" action="<?= /* @NoEscape */ $postParams['action'] ?>" method="post">
+                                                    <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $postParams['data']['product'] ?>">
+                                                    <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                                    <?= $block->getBlockHtml('formkey') ?>
+                                                    <button type="submit"
+                                                            title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
+                                                            class="action tocart primary">
+                                                        <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                                    </button>
+                                                </form>
+                                            <?php else: ?>
+                                                <?php if ($_product->getIsSalable()): ?>
+                                                    <div class="stock available"><span><?= /* @escapeNotVerified */ __('In stock') ?></span></div>
+                                                <?php else: ?>
+                                                    <div class="stock unavailable"><span><?= /* @escapeNotVerified */ __('Out of stock') ?></span></div>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
 
 
-                                <?php if ($addToBlock = $block->getChildBlock('addto')): ?>
-                                    <?= $addToBlock->setProduct($_product)->getChildHtml() ?>
-                                <?php endif; ?>
-
+                                            <?php if ($addToBlock = $block->getChildBlock('addto')): ?>
+                                                <?= $addToBlock->setProduct($_product)->getChildHtml() ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -99,7 +111,6 @@ if($themeStyle=='horizontal') {
     <?php
 }
 ?>
-
 <script type="text/x-magento-init">
 {
     "[data-role=tocart-form], .form.map.checkout": {
@@ -124,7 +135,7 @@ if($themeStyle=='horizontal') {
                 autoplayHoverPause: true,
                 animateOut: sliderOut,
                 animateIn: sliderIn,
-                autoplayTimeout: 5000
+                autoplayTimeout: 10000
             });
 
             $.fn.owlRemoveItem = function (num) {
