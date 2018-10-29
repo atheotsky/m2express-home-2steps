@@ -66,17 +66,119 @@ $pos = $block->getPositioned();
                                     <div class="product actions product-item-actions">
                                         <div class="actions-primary"<?php echo strpos($pos, $viewMode . '-primary') ? $position : ''; ?>>
                                             <?php if ($_product->isSaleable()): ?>
-                                                <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                                            <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                                                <?php if($_product->getTypeId() == \Magento\GroupedProduct\Model\Product\Type\Grouped::TYPE_CODE): ?>
+                                                    <div style="display: none;" class="cart-popup-<?= $_product->getId(); ?>">
+                                                        <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtml($_product->getSku()) ?>" action="<?= /* @NoEscape */ $postParams['action'] ?>" method="post">
+                                                            <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $postParams['data']['product'] ?>">
+                                                            <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                                            <?= $block->getBlockHtml('formkey') ?>
+                                                        <?php $associatedProducts = $_product->getTypeInstance()->getAssociatedProducts($_product); ?>
+                                                        <table class="table data grouped" id="super-product-table">
+                                                            <caption class="table-caption"><?= /* @escapeNotVerified */ __('Grouped product items') ?></caption>
+                                                            <thead>
+                                                            <tr>
+                                                                <th class="col item" scope="col"><?= /* @escapeNotVerified */ __('Product Name') ?></th>
+                                                                <?php if ($_product->isSaleable()): ?>
+                                                                    <th class="col qty" scope="col"><?= /* @escapeNotVerified */ __('Qty') ?></th>
+                                                                <?php endif; ?>
+                                                            </tr>
+                                                            </thead>
+                                                                <?php foreach ($associatedProducts as $_item): ?>
+                                                                    <tbody>
+                                                                    <tr>
+                                                                        <td data-th="<?= $block->escapeHtml(__('Product Name')) ?>" class="col item">
+                                                                            <strong class="product-item-name"><?= $block->escapeHtml($_item->getName()) ?></strong>
+                                                                            <?php if ($block->getCanShowProductPrice($_product)): ?>
+                                                                                <?php if ($block->getCanShowProductPrice($_item)): ?>
+                                                                                    <?= /* @escapeNotVerified */ $block->getProductPrice($_item) ?>
+                                                                                <?php endif; ?>
+                                                                            <?php endif; ?>
+                                                                        </td>
+                                                                        <?php if ($_product->isSaleable()): ?>
+                                                                            <td data-th="<?= $block->escapeHtml(__('Qty')) ?>" class="col qty">
+                                                                                <?php if ($_item->isSaleable()) : ?>
+                                                                                    <div class="control qty">
+                                                                                        <input type="number"
+                                                                                               name="super_group[<?= /* @escapeNotVerified */ $_item->getId() ?>]"
+                                                                                               data-selector="super_group[<?= /* @escapeNotVerified */ $_item->getId() ?>]"
+                                                                                               value="<?= /* @escapeNotVerified */ $_item->getQty() * 1 ?>"
+                                                                                               title="<?= /* @escapeNotVerified */ __('Qty') ?>"
+                                                                                               class="input-text qty"
+                                                                                               data-validate="{'validate-grouped-qty':'#super-product-table'}"
+                                                                                               data-errors-message-box="#validation-message-box"/>
+                                                                                    </div>
+                                                                                <?php else: ?>
+                                                                                    <div class="stock unavailable" title="<?= /* @escapeNotVerified */ __('Availability') ?>">
+                                                                                        <span><?= /* @escapeNotVerified */ __('Out of stock') ?></span>
+                                                                                    </div>
+                                                                                <?php endif; ?>
+                                                                            </td>
+                                                                        <?php endif; ?>
+                                                                    </tr>
+                                                                    <?php if ($block->getCanShowProductPrice($_product)
+                                                                        && $block->getCanShowProductPrice($_item)
+                                                                        && trim($block->getProductPriceHtml(
+                                                                            $_item,
+                                                                            \Magento\Catalog\Pricing\Price\TierPrice::PRICE_CODE
+                                                                        ))): ?>
+                                                                        <tr class="row-tier-price">
+                                                                            <td colspan="2">
+                                                                                <?= $block->getProductPriceHtml(
+                                                                                    $_item,
+                                                                                    \Magento\Catalog\Pricing\Price\TierPrice::PRICE_CODE
+                                                                                ) ?>
+                                                                            </td>
+                                                                        </tr>
+                                                                    <?php endif; ?>
+                                                                    </tbody>
+                                                                <?php endforeach; ?>
+                                                        </table>
+                                                        <button type="submit"
+                                                                title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
+                                                                class="action tocart primary">
+                                                            <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                                        </button>
+                                                        </form>
+                                                    </div>
+                                                    <button type="button" data-id="<?= $_product->getId(); ?>"
+                                                            title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
+                                                            class="action opencartpopup primary">
+                                                        <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                                    </button>
+                                                <?php elseif($_product->getTypeId() == \Magento\Bundle\Model\Product\Type::TYPE_CODE): ?>
+                                                    <div style="display: none;" class="cart-popup-<?= $_product->getId(); ?>">
+                                                        <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtml($_product->getSku()) ?>" action="<?= /* @NoEscape */ $postParams['action'] ?>" method="post">
+                                                            <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $postParams['data']['product'] ?>">
+                                                            <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                                            <?= $block->getBlockHtml('formkey') ?>
+                                                        <?php if ($optBlock = $block->getChildBlock('type_bundle_options')->setData('product', $_product)): ?>
+                                                            <?= $block->getChildHtml('type_bundle_options') ?>
+                                                        <?php endif; ?>
+                                                        <button type="submit"
+                                                                title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
+                                                                class="action tocart primary">
+                                                            <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                                        </button>
+                                                        </form>
+                                                    </div>
+                                                        <button type="button" data-id="<?= $_product->getId(); ?>"
+                                                                title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
+                                                                class="action opencartpopup primary">
+                                                            <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                                        </button>
+                                                <?php else: ?>
                                                 <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtml($_product->getSku()) ?>" action="<?= /* @NoEscape */ $postParams['action'] ?>" method="post">
                                                     <input type="hidden" name="product" value="<?= /* @escapeNotVerified */ $postParams['data']['product'] ?>">
                                                     <input type="hidden" name="<?= /* @escapeNotVerified */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @escapeNotVerified */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
                                                     <?= $block->getBlockHtml('formkey') ?>
-                                                    <button type="submit"
-                                                            title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
-                                                            class="action tocart primary">
-                                                        <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
-                                                    </button>
+                                                        <button type="submit"
+                                                                title="<?= $block->escapeHtml(__('Add to Cart')) ?>"
+                                                                class="action tocart primary">
+                                                            <span><?= /* @escapeNotVerified */ __('Add to Cart') ?></span>
+                                                        </button>
                                                 </form>
+                                                <?php endif; ?>
                                             <?php else: ?>
                                                 <?php if ($_product->getIsSalable()): ?>
                                                     <div class="stock available"><span><?= /* @escapeNotVerified */ __('In stock') ?></span></div>
@@ -84,8 +186,6 @@ $pos = $block->getPositioned();
                                                     <div class="stock unavailable"><span><?= /* @escapeNotVerified */ __('Out of stock') ?></span></div>
                                                 <?php endif; ?>
                                             <?php endif; ?>
-
-
                                             <?php if ($addToBlock = $block->getChildBlock('addto')): ?>
                                                 <?= $addToBlock->setProduct($_product)->getChildHtml() ?>
                                             <?php endif; ?>
@@ -100,6 +200,7 @@ $pos = $block->getPositioned();
         <?php endif; ?>
     </div>
 </div>
+
 <?php
 if($themeStyle=='horizontal') {
     ?>
@@ -124,7 +225,7 @@ if($themeStyle=='horizontal') {
             'Magento_Ui/js/modal/modal',
             'owlCarousel'
         ],
-        function($, owlCarousel, modal) {
+        function($, modal, owlCarousel) {
 
             var owl = $('.owl-carousel');
             owl.owlCarousel({
@@ -208,6 +309,25 @@ if($themeStyle=='horizontal') {
                 // callback
                 if (callback) callback.call(this, owl);
             };
+
+            $(".opencartpopup").on('click',function(){
+                var options = {
+                    type: 'popup',
+                    responsive: true,
+                    innerScroll: false,
+                    title: false,
+                    buttons: [{
+                        text: $.mage.__('Continue'),
+                        class: 'mymodal1',
+                        click: function () {
+                            this.closeModal();
+                        }
+                    }]
+                };
+                var modalElement = $('.cart-popup-' + $(this).data('id'));
+                var popup = modal(options, modalElement);
+                modalElement.modal('openModal');
+            });
         }
     );
 </script>

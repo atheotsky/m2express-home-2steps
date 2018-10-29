@@ -14,6 +14,9 @@ use Magento\Catalog\Helper\Product\Compare;
 use Magento\Catalog\Block\Product\ImageBuilder;
 use Magento\Framework\App\ActionInterface;
 
+//use Magento\GroupedProduct\Model\Product\Type\Grouped;
+//use Magento\Bundle\Model\Product\Type;
+
 /**
  * Class HomeProduct
  * @package M2express\Home2Steps\Block
@@ -79,7 +82,7 @@ class HomeProduct extends Template
         $collection = $this->productCollectionFactory->create();
         $collection->addAttributeToSelect('*');
         $collection->addCategoriesFilter(['in' => $category_id_array]);
-        $collection->addAttributeToFilter('type_id', 'configurable');
+        //$collection->addAttributeToFilter('type_id', 'configurable');
         $collection->addAttributeToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH);
         $collection->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
         $collection->getSelect()->orderRand();
