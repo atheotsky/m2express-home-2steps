@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright © Magento2Express. All rights reserved.
+ * @author: <mailto:contact@magento2express.com>.
+ */
 namespace M2express\Home2Steps\Block;
 
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -13,9 +16,7 @@ use Magento\Checkout\Helper\Cart;
 use Magento\Catalog\Helper\Product\Compare;
 use Magento\Catalog\Block\Product\ImageBuilder;
 use Magento\Framework\App\ActionInterface;
-
-//use Magento\GroupedProduct\Model\Product\Type\Grouped;
-//use Magento\Bundle\Model\Product\Type;
+use M2express\Home2Steps\Plugin\Block\Topmenu;
 
 /**
  * Class HomeProduct
@@ -34,7 +35,7 @@ class HomeProduct extends Template
     protected $urlHelper;
 
     protected $_category;
-
+    protected $_topMenu;
     /**
      * Constructor
      *
@@ -57,6 +58,7 @@ class HomeProduct extends Template
         Compare $compareHelper,
         ImageBuilder $imageBuilder,
         \Magento\Framework\Url\Helper\Data $urlHelper,
+        Topmenu $topmenu,
         array $data = []
     ) {
         $this->productCollectionFactory = $productFactory;
@@ -67,6 +69,7 @@ class HomeProduct extends Template
         $this->compareHelper = $compareHelper;
         $this->imageBuilder = $imageBuilder;
         $this->urlHelper = $urlHelper;
+        $this->_topMenu = $topmenu;
         parent::__construct($context, $data);
     }
 
@@ -89,6 +92,11 @@ class HomeProduct extends Template
 
         return $collection;
 
+    }
+
+    public function getTopMenuArray()
+    {
+        return $this->_topMenu->getAllLandingPage();
     }
 
     /**

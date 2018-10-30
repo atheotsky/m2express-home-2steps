@@ -60,7 +60,7 @@ Custom Product List
 #custom-main-container {
     width: 100%;
     height: 100%;
-    position: absolute;
+    /*position: absolute;*/
 }
 .custom-product-container {
     max-width: 1200px;

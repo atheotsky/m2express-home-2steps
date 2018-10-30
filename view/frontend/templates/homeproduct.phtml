@@ -201,6 +201,13 @@ $pos = $block->getPositioned();
     </div>
 </div>
 
+<?php $topMenuData = $block->getTopMenuArray();
+foreach ($topMenuData as $blockid){
+    echo '<a id="landing'.$blockid.'"></a>';
+    echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId($blockid)->toHtml();
+}
+?>
+
 <?php
 if($themeStyle=='horizontal') {
     ?>
@@ -328,6 +335,30 @@ if($themeStyle=='horizontal') {
                 var popup = modal(options, modalElement);
                 modalElement.modal('openModal');
             });
+
+            $(".anchorLink").click(function(e){
+                e.preventDefault();
+
+                var id     = $(this).attr("href");
+                var offset = $(id).offset();
+
+                $("html, body").animate({
+                    scrollTop: offset.top
+                }, 1000);
+            });
+/*
+            var owlImg = $('.img-carousel');
+            owlImg.owlCarousel({
+                autoplay: true,
+                items: 1,
+                nav: true,
+                loop: true,
+                autoplayHoverPause: true,
+                animateOut: sliderOut,
+                animateIn: sliderIn,
+                autoplayTimeout: 5000
+            });
+            */
         }
     );
 </script>

@@ -1,0 +1,7 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Theme\Block\Html\Topmenu" type="M2express\Home2Steps\Block\Html\Topmenu" />
+     <type name="Magento\Theme\Block\Html\Topmenu">
+         <plugin name="catalogTopmenu" disabled="true" />
+         <plugin name="catalogTopmenuCustom" type="M2express\Home2Steps\Plugin\Block\Topmenu" />
+    </type>
+</config>
