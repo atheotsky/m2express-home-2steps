@@ -67,8 +67,11 @@ class Topmenu extends \Magento\Theme\Block\Html\Topmenu
                 if($child->getDisplayMode() == \Magento\Catalog\Model\Category::DM_PAGE && $child->getIsAnchor() == 1) {
                     $outermostClassCode = ' class="anchorLink ' . $outermostClass . '" ';
                 } else {
-                    $outermostClassCode = ' class="' . $outermostClass . '" ';
+                    $outermostClassCode = ' class="categoryLink ' . $outermostClass . '" ';
                 }
+                $child->setClass($outermostClass);
+            } else {
+                $outermostClassCode = ' class="categoryLink ' . $outermostClass . '" ';
                 $child->setClass($outermostClass);
             }
 
@@ -87,7 +90,7 @@ class Topmenu extends \Magento\Theme\Block\Html\Topmenu
                         $limit
                     ) . '</li>';
             } else {
-                $html .= '<a href="' . $child->getUrl() . '" ' . $outermostClassCode . '><span>' . $this->escapeHtml(
+                $html .= '<a href="javascript:void(0);" ' . $outermostClassCode . ' data-cid="'.$child->getCid().'"><span>' . $this->escapeHtml(
                         $child->getName()
                     ) . '</span></a>' . $this->_addSubMenu(
                         $child,

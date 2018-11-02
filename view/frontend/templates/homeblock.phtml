@@ -1,0 +1,8 @@
+<?php
+
+$topMenuData = $block->getTopMenuArray();
+foreach ($topMenuData as $blockid){
+    echo '<a id="landing'.$blockid.'"></a>';
+    echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId($blockid)->toHtml();
+}
+?>

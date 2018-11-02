@@ -36,6 +36,8 @@ class HomeProduct extends Template
 
     protected $_category;
     protected $_topMenu;
+    protected $_currentCategory;
+
     /**
      * Constructor
      *
@@ -73,12 +75,30 @@ class HomeProduct extends Template
         parent::__construct($context, $data);
     }
 
+    public function setCurrentCategory($categoryId)
+    {
+        $this->_currentCategory = $categoryId;
+    }
+
+    public function getCurrentCategory()
+    {
+        if($this->hasData('category')) {
+            return $this->getData('category');
+        } else {
+            if($this->_currentCategory) {
+                return $this->_currentCategory;
+            } else {
+                return $this->helper->getHomeCategory();
+            }
+        }
+    }
+
     /**
      * @return \Magento\Catalog\Model\ResourceModel\Product\Collection
      */
     public function getProductCollection()
     {
-        $categoryId = $this->helper->getHomeCategory();
+        $categoryId = $this->getCurrentCategory();
         $currentCategory = $this->getCategory($categoryId);
         $category_id_array = $this->getAllChildren();
 
@@ -88,7 +108,7 @@ class HomeProduct extends Template
         //$collection->addAttributeToFilter('type_id', 'configurable');
         $collection->addAttributeToFilter('visibility', \Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH);
         $collection->addAttributeToFilter('status',\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
-        $collection->getSelect()->orderRand();
+        //$collection->getSelect()->orderRand();
 
         return $collection;
 

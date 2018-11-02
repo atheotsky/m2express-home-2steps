@@ -199,166 +199,25 @@ $pos = $block->getPositioned();
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
+    <?php
+    if($themeStyle=='horizontal') {
+        ?>
+        <script>var sliderIn = 'slideInUp', sliderOut = 'slideOutUp';</script>
+    <?php
+    } else {
+    ?>
+        <script>var sliderIn = 'fadeInRight', sliderOut = 'fadeOutRight';</script>
+        <?php
+    }
+    ?>
 </div>
 
-<?php $topMenuData = $block->getTopMenuArray();
+<?php
+/*
+$topMenuData = $block->getTopMenuArray();
 foreach ($topMenuData as $blockid){
     echo '<a id="landing'.$blockid.'"></a>';
     echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId($blockid)->toHtml();
 }
+ */
 ?>
-
-<?php
-if($themeStyle=='horizontal') {
-    ?>
-    <script>var sliderIn = 'slideInUp', sliderOut = 'slideOutUp';</script>
-    <?php
-} else {
-    ?>
-    <script>var sliderIn = 'fadeInRight', sliderOut = 'fadeOutRight';</script>
-    <?php
-}
-?>
-<script type="text/x-magento-init">
-{
-    "[data-role=tocart-form], .form.map.checkout": {
-        "catalogAddToCart": { }
-    }
-}
-</script>
-<script>
-    requirejs([
-            'jquery',
-            'Magento_Ui/js/modal/modal',
-            'owlCarousel'
-        ],
-        function($, modal, owlCarousel) {
-
-            var owl = $('.owl-carousel');
-            owl.owlCarousel({
-                autoplay: true,
-                items: 1,
-                nav: true,
-                loop: true,
-                autoplayHoverPause: true,
-                animateOut: sliderOut,
-                animateIn: sliderIn,
-                autoplayTimeout: 10000
-            });
-
-            $.fn.owlRemoveItem = function (num) {
-
-                var owl_data = $(this).data('owl.carousel');
-
-                owl_data._items = $.map(
-                    owl_data._items,
-                    function (data, index) {
-
-                        if (index !== num) return data;
-                    }
-                );
-
-                $(this).find(".owl-item").eq(num).remove();
-
-            };
-
-            $.fn.owlFilter = function (data, callback) {
-
-                var owl = this,
-                    $elemCopy = $('<div>').css('display', 'none');
-
-                /* check attr owl-clone exist */
-
-                if (typeof($(owl).data('owl-clone')) === 'undefined') {
-
-                    $(owl).find(".owl-item:not(.cloned)").clone().appendTo($elemCopy);
-                    $(owl).data('owl-clone', $elemCopy);
-
-                }
-
-                else {
-
-                    $elemCopy = $(owl).data('owl-clone');
-
-                }
-
-                /* clear content */
-
-                owl.trigger('replace.owl.carousel', ['<div/>']);
-
-                switch (data) {
-
-                    case '*':
-
-                        $elemCopy.children().each(
-                            function () {
-                                owl.trigger('add.owl.carousel', [$(this).clone()]);
-                            }
-                        );
-
-                        break;
-
-                    default:
-
-                        $elemCopy.find(data).each(
-                            function () {
-                                owl.trigger('add.owl.carousel', [$(this).parent().clone()]);
-                            }
-                        );
-
-                        break;
-                }
-
-                /* remove item empty when clear */
-                owl.owlRemoveItem(0);
-                owl.trigger('refresh.owl.carousel').trigger('to.owl.carousel', [0]);
-
-                // callback
-                if (callback) callback.call(this, owl);
-            };
-
-            $(".opencartpopup").on('click',function(){
-                var options = {
-                    type: 'popup',
-                    responsive: true,
-                    innerScroll: false,
-                    title: false,
-                    buttons: [{
-                        text: $.mage.__('Continue'),
-                        class: 'mymodal1',
-                        click: function () {
-                            this.closeModal();
-                        }
-                    }]
-                };
-                var modalElement = $('.cart-popup-' + $(this).data('id'));
-                var popup = modal(options, modalElement);
-                modalElement.modal('openModal');
-            });
-
-            $(".anchorLink").click(function(e){
-                e.preventDefault();
-
-                var id     = $(this).attr("href");
-                var offset = $(id).offset();
-
-                $("html, body").animate({
-                    scrollTop: offset.top
-                }, 1000);
-            });
-/*
-            var owlImg = $('.img-carousel');
-            owlImg.owlCarousel({
-                autoplay: true,
-                items: 1,
-                nav: true,
-                loop: true,
-                autoplayHoverPause: true,
-                animateOut: sliderOut,
-                animateIn: sliderIn,
-                autoplayTimeout: 5000
-            });
-            */
-        }
-    );
-</script>

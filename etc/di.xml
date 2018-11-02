@@ -4,4 +4,8 @@
          <plugin name="catalogTopmenu" disabled="true" />
          <plugin name="catalogTopmenuCustom" type="M2express\Home2Steps\Plugin\Block\Topmenu" />
     </type>
+    <type name="Magento\Cms\Controller\Index\Index">
+        <plugin name="M2express_Home2Steps_Plugin_Home_Category"
+                type="M2express\Home2Steps\Plugin\Home\Category"></plugin>
+    </type>
 </config>

@@ -165,6 +165,7 @@ class Topmenu
         }
         return [
             'name' => $category->getName(),
+            'cid' => $category->getId(),
             'id' => 'category-node-' . $category->getId(),
             'url' => $this->catalogCategory->getCategoryUrl($category),
             'has_active' => in_array((string)$category->getId(), explode('/', $currentCategory->getPath()), true),
